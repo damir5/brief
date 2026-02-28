@@ -2,14 +2,22 @@ function shellEscape(value: string): string {
   return `'${value.replaceAll("'", `'\\''`)}'`;
 }
 
-export async function runPrompt(llmCommand: string, prompt: string): Promise<string> {
-  const promptFile = await Deno.makeTempFile({ prefix: "brief-prompt-", suffix: ".txt" });
+export async function runPrompt(
+  llmCommand: string,
+  prompt: string,
+): Promise<string> {
+  const promptFile = await Deno.makeTempFile({
+    prefix: "brief-prompt-",
+    suffix: ".txt",
+  });
   try {
     await Deno.writeTextFile(promptFile, prompt);
+    const usesTemplatePlaceholders = llmCommand.includes("{prompt}") ||
+      llmCommand.includes("{prompt_file}");
     const expanded = llmCommand
       .replaceAll("{prompt_file}", shellEscape(promptFile))
       .replaceAll("{prompt}", shellEscape(prompt));
-    const command = expanded.includes("{prompt}") || expanded.includes("{prompt_file}")
+    const command = usesTemplatePlaceholders
       ? expanded
       : `${expanded} ${shellEscape(prompt)}`;
 

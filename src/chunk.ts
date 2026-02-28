@@ -9,8 +9,13 @@ export function chooseLengthTier(text: string): "short" | "medium" | "long" {
   return "long";
 }
 
-export function chunkText(text: string, chunkWords = 1500, overlapWords = 150): string[] {
+export function chunkText(
+  text: string,
+  chunkWords = 1500,
+  overlapWords = 150,
+): string[] {
   const words = text.trim().split(/\s+/).filter(Boolean);
+  if (words.length <= 4000) return [text.trim()];
   if (words.length <= chunkWords) return [text.trim()];
 
   const chunks: string[] = [];
