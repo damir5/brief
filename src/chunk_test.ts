@@ -13,7 +13,7 @@ Deno.test("chooseLengthTier follows thresholds", () => {
 });
 
 Deno.test("chunkText splits large inputs with overlap", () => {
-  const chunks = chunkText("word ".repeat(4000), 1500, 150);
+  const chunks = chunkText("word ".repeat(4001), 1500, 150);
   assertEquals(chunks.length > 1, true);
 });
 

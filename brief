@@ -1,5 +1,12 @@
-#!/usr/bin/env -S deno run -A
+#!/usr/bin/env bash
+set -euo pipefail
 
-import { main } from "./main.ts";
+SCRIPT_PATH="${BASH_SOURCE[0]}"
+while [ -L "$SCRIPT_PATH" ]; do
+  SCRIPT_DIR="$(cd "$(dirname "$SCRIPT_PATH")" && pwd -P)"
+  SCRIPT_PATH="$(readlink "$SCRIPT_PATH")"
+  [[ "$SCRIPT_PATH" == /* ]] || SCRIPT_PATH="$SCRIPT_DIR/$SCRIPT_PATH"
+done
 
-await main(Deno.args);
+REPO_DIR="$(cd "$(dirname "$SCRIPT_PATH")" && pwd -P)"
+exec deno run -A --config "$REPO_DIR/deno.json" "$REPO_DIR/main.ts" "$@"

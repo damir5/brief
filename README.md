@@ -10,3 +10,11 @@ cat transcript.txt | ./brief summarize --title "Episode" --source-type youtube -
 ```
 
 The default output is JSON containing `TLDR` and `Research Brief` sections. Set `BRIEF_LLM_CMD` or pass `--llm-command` to control the LLM backend.
+
+## Install
+
+```bash
+ln -sf "$(pwd)/brief" ~/.local/bin/brief
+```
+
+The wrapper resolves its real location, so it works both from this directory and through a symlink.
