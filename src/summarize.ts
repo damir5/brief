@@ -1,4 +1,5 @@
 import { chooseLengthTier, chunkText } from "./chunk.ts";
+import { extractJsonObject } from "./json.ts";
 import { runPrompt } from "./llm.ts";
 import {
   buildNotesPrompt,
@@ -25,29 +26,6 @@ function collectReferences(
   }));
 }
 
-function extractJsonPayload(
-  raw: string,
-): {
-  tldr: { coreTakeaway: string; markdown: string };
-  researchBrief: { thesis: string; markdown: string };
-} {
-  const trimmed = raw.trim().replace(/^```json\s*/i, "").replace(/^```\s*/i, "")
-    .replace(
-      /\s*```$/,
-      "",
-    );
-  const lines = trimmed.split("\n");
-  for (let start = 0; start < lines.length; start++) {
-    const candidate = lines.slice(start).join("\n").trim();
-    if (!candidate.startsWith("{")) continue;
-    try {
-      return JSON.parse(candidate);
-    } catch {
-      // keep scanning upward
-    }
-  }
-  return JSON.parse(trimmed);
-}
 
 export async function summarizeSource(
   options: SummarizeSourceOptions,
@@ -87,7 +65,10 @@ export async function summarizeSource(
       briefWords: budgets.briefWords,
     }),
   );
-  const summary = extractJsonPayload(rawSummary);
+  const summary = extractJsonObject<{
+    tldr: { coreTakeaway: string; markdown: string };
+    researchBrief: { thesis: string; markdown: string };
+  }>(rawSummary);
 
   return {
     title: options.title,

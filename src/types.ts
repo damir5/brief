@@ -7,6 +7,27 @@ export interface SummarizeSourceOptions {
   text: string;
 }
 
+export interface PodcastSummaryOptions {
+  title: string;
+  sourceUrl: string | null;
+  instructions: string;
+  llmCommand: string;
+  // Transcript lines, each starting with its [hh:mm:ss] label.
+  text: string;
+}
+
+export interface PodcastSummaryPoint {
+  text: string;
+  at: string | null;
+}
+
+export interface PodcastSummary {
+  tldr: string;
+  keyPoints: PodcastSummaryPoint[];
+  quotes: PodcastSummaryPoint[];
+  topics: string[];
+}
+
 export interface SummaryResult {
   title: string;
   sourceUrl: string | null;
